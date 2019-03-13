@@ -20,5 +20,6 @@ randomowy_model_predykcja.ipynb <- Sieć neuronowa zbudowana na kilku kolumnach,
 - [ ] part of speech tagger (określa częsci mowy) *Kasia*
 - [ ] czyszczenie macierzy słów *Marcin, Krzysiek*
 - [ ] redukcja wymiarów *Kasia, Kaja, Krzysiek, Asia, Marcin*
+- [ ] gui *Marcin*
 - [ ] sprawdzić wpływ zbalansowania *PÓŹNIEJ*
 - [ ] modele
