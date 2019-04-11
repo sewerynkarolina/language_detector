@@ -6,6 +6,7 @@ Celem projektu jest identyfikacja języka ojczystego twórcy pracy naukowej doty
 ## Etapy
 ### I) Tworzenie macierzy:
 create_matrix_from_files.ipynb
+Tagger_jupyter.ipynb 
 
 ### II) Redukcja wymiarów
 
