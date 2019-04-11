@@ -37,5 +37,6 @@ def part_of_speech_tagger(path, list_of_st):
     col_keep = df.loc[:, mask]
     
     #Zapisuje i zwracam
+    col_keep['@C#ountry']=df['@C#ountry']
     col_keep.iloc[:col_keep.shape[0]-1].to_csv('probna2.csv')
     return(col_keep.iloc[:col_keep.shape[0]-1])
