@@ -1,0 +1,1 @@
+W tym folderze powstaja gotowe kody
