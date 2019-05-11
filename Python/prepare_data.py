@@ -1,4 +1,4 @@
-import pdftotext
+#import pdftotext
 import re
 from collections import Counter
 from string import punctuation
