@@ -81,6 +81,22 @@ def remove_footer(file,page_number, n_gram=25):
             file = file.replace(i,"")
             
     return(file)
+
+
+
+def remove_short_words(text, max_length=3):
+    """
+    usuwa z tekstu slowa o dlugosci mniejszej lub rownej od max_length
+    
+    argumenty:
+    text - wejsciowy test
+    max_length - maksymalna dlugosc slow do usuniecia
+    
+    zwraca:
+    tekst z usunietymi krotkimi slowami
+    """
+    short_word = re.compile(r'\W*\b\w{1,' + str(max_length) + r'}\b')
+    return short_word.sub('', text)
     
 
 
