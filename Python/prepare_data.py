@@ -10,6 +10,9 @@ import re
 from nltk.stem import WordNetLemmatizer
 import nltk
 nltk.download('wordnet')
+import numpy as np
+from nltk.corpus import words
+nltk.download('words')
 
 def n_grams(text, n=2):
     '''
@@ -140,7 +143,7 @@ def remove_short_words_which_not_exists(text, max_length=3):
     """
     Wewnętrzna funkcja pomocnicza do remove_short_words_from_df
     """
-    words_to_remove = [word for word in np.unique(df['0'][0].split()) if len(word) <= max_length and word not in words.words()]
+    words_to_remove = [word for word in np.unique(text.split()) if len(word) <= max_length and word not in words.words()]
     for i in words_to_remove:
         text =text.replace(i, "")
     return(text)
