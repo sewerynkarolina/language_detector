@@ -5,9 +5,10 @@ from string import punctuation
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 import pandas as pd
-import pdftotext
+#import pdftotext
 import re
 from nltk.stem import WordNetLemmatizer
+import nltk
 nltk.download('wordnet')
 
 def n_grams(text, n=2):
