@@ -71,7 +71,7 @@ def remove_footer(file,page_number, n_gram=25):
 
     
     for i in list(range(n_gram, 2,-1)):
-        main_dict = Counter(dict(filter(lambda x: x[1] >= page_number/2, Counter(n_grams(file,i)).items())))
+        main_dict = Counter(dict(filter(lambda x: x[1] >= page_number/2 and "startstrona" in x[0], Counter(n_grams(file,i)).items())))
         if (main_dict!=Counter() ):
             break
     
