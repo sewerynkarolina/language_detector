@@ -156,3 +156,13 @@ def remove_short_words_from_df(df, column_name, max_length=3):
         df[column_name][i]= remove_short_words_which_not_exists(df[column_name][i], max_length)
     return (df)
     
+def vectorizer_n_files(df, list_of_files_indexes, column_name='0'):
+    """
+    Funkcja która przekształca kolumnę dataframu z tekstem na macierz zliczeń
+    zwracamy macierz i listę krajów
+    """
+    vec = CountVectorizer()
+    X = vec.fit_transform(df.iloc[list_of_files_indexes][column_name])
+    new_df = pd.DataFrame(X.toarray(), columns=vec.get_feature_names())
+    
+    return(new_df,df.iloc[list_of_files_indexes]['countries'].values ) 
