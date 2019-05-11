@@ -2,6 +2,13 @@ import pdftotext
 import re
 from collections import Counter
 from string import punctuation
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+import pandas as pd
+import pdftotext
+import re
+from nltk.stem import WordNetLemmatizer
+nltk.download('wordnet')
 
 def n_grams(text, n=2):
     '''
@@ -98,6 +105,50 @@ def remove_short_words(text, max_length=3):
     short_word = re.compile(r'\W*\b\w{1,' + str(max_length) + r'}\b')
     return short_word.sub('', text)
     
+    
+    
+def merge_df(df, df2):
+    """
+    Łączenie dwóch csv-ek i stworzenie kolumn z autorem i krajem
+    """
+    df2 =df2.rename(columns={'0':'country'})
+    df['country']=df2['country']
+    df=df.dropna()
+    df=df.reset_index()[['0','country']] #Po usunieciu nanów usunęłam indeksy, więc od nowa
+    country_list = []*df.size
+    name_list = []*df.size
+    for i in list(range(df.shape[0])):
+        a = df['country'][i]
+        country_list.append(a.split('/')[len(a.split('/'))-2])
+        name_list.append(a.split('/')[len(a.split('/'))-1])
+    df['countries']=country_list
+    df['authors']=name_list
+    return(df)
 
+def make_lemmatization(df,column_name ='0'):
+    wordnet_lemmatizer = WordNetLemmatizer()
+    for i in list(range(df.shape[0])):
+        string  = ''
+        sentence_words = nltk.word_tokenize(df[column_name][i])
+        for word in sentence_words:
+            string = string + wordnet_lemmatizer.lemmatize(word, pos="v") + ' '
+        df[column_name][i]=string
+    return(df)
 
+def remove_short_words_which_not_exists(text, max_length=3):
+    """
+    Wewnętrzna funkcja pomocnicza do remove_short_words_from_df
+    """
+    words_to_remove = [word for word in np.unique(df['0'][0].split()) if len(word) <= max_length and word not in words.words()]
+    for i in words_to_remove:
+        text =text.replace(i, "")
+    return(text)
+
+def remove_short_words_from_df(df, column_name, max_length=3):
+    """
+    Usuwa z tekstu (df) krótkie słowa, które nie istnieją
+    """
+    for i in list(range(df.shape[0])):
+        df[column_name][i]= remove_short_words_which_not_exists(df[column_name][i], max_length)
+    return (df)
     
