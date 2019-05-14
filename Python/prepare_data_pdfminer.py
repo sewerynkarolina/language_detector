@@ -67,26 +67,46 @@ def normalize2(file):
 
 
 
+# Czytanie danych i zapis paczkach (na wypdek, gdyby coś się popsuło po drodze)
+import pandas as pd
+h = len(files)/4
 
-text=[]
 i=0
-for file in files:
-    try:
-        t = convert_pdf_to_txt(file)
-    except:
-        t = ""
-        print("Błąd: " + str(i) + " - " + file)
-    
-    text.append(t)
-    
-    if(i%10==0):
-        print(i)
-    i = i+1    
+for j in range(4):
+    files_t = files[int(j*h):int((j+1)*h)]
 
-if((i-1)%10!=0):
-    print(i)
+    text=[]
+    print("Paczka " + str(j))
+    if(i%50!=0):
+        print(i)
     
+
+    for file in files_t:
+        try:
+            t = convert_pdf_to_txt(file)
+        except:
+            t = ""
+            print("Błąd: " + str(i) + " - " + file)
+        
+        text.append(t)
+        
+        if(i%50==0):
+            print(i)
+        i = i+1    
     
+    if((i-1)%50!=0):
+        print(i-1)
+    
+    t = pd.DataFrame({ "label": files_t, "text": text})
+    t.to_csv(path + "text" + str(j) + ".csv")
+    t.to_pickle(path + "text" + str(j) + ".pkl")
+    
+
+
+
+
+
+
 text_clean = []
 text_n = []
 
