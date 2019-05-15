@@ -3,6 +3,7 @@ path = '/home/marcin/Dane/'
 import pandas as pd
 import re
 from string import punctuation
+import numpy as np
 
 def normalize2(file):
     
@@ -41,6 +42,38 @@ del data2
 
 text = data["text"]
 files = data["label"]
+
+
+# Ujednolicenie oznaczeń państw
+
+nationality = []
+for f in files:
+    k2 = f.rfind("/")
+    k1 = f.rfind("/", 0, k2)
+    k1, k2
+    x = f[(k1+1):k2]
+    
+    xx = x.replace("Americans", "USA").replace("Austrians", "Austria").\
+    replace("Bangladeshi", "Bangladesh").replace("Chinese", "China").\
+    replace("Czechs", "CzechRepublic").replace("French", "France").\
+    replace("Germans", "Germany").replace("Greeks", "Greece").\
+    replace("Hungarians", "Hungary").replace("Italians", "Italy").\
+    replace("Japanese", "Japan").replace("Lithuanians", "Lithuania").\
+    replace("Poles", "Poland").replace("Polish", "Poland").\
+    replace("Portuguese", "Portugal").replace("Russians", "Russia").\
+    replace("Russian", "Russia").replace("Slovakians", "Slovakia").\
+    replace("Spanish", "Spain").replace("Turks", "Turkey").\
+    replace("Portugiese", "Portugal").\
+    replace("Malays", "X").replace("Xia", "Malaysia").replace("X", "Malaysia")
+    
+    nationality.append(xx)
+
+np.sort(np.unique(nationality))
+
+a = np.unique(np.array(nationality), return_counts=True)
+pd.DataFrame({"Country": a[0], "count": a[1]}).sort_values("Country").reset_index(drop=True)
+
+
 
 
 import ftfy
