@@ -41,33 +41,7 @@ def convert_pdf_to_txt(path):
 
 
 
-import re
-from string import punctuation
-
-def normalize2(file):
-    
-    #\x0c to znak specjalny końca strony
-    file = file.replace("\x0c", " startstrona ")
-    file = " startstrona " + file
-    
-    file = re.sub("[0-9]", "", file)
-
-    #zmiana na małe litery
-    file = file.lower()
-    #Zmieniamy np. ó na o
-    file = re.sub(r'[^\x20-\x7e]', '', file)
-    #usuwanie cyfry
-    file = re.sub(r'\d+', '', file)
-    #usuwanie znaków specjalne
-    file = ''.join(c for c in file if c not in punctuation)
-    #Usuwamy  białe spacje
-    file = re.sub(' +', ' ', file)
-    return(file)
-
-
-
-
-# Czytanie danych i zapis paczkach (na wypdek, gdyby coś się popsuło po drodze)
+# Czytanie danych i zapis w paczkach (na wypadek, gdyby coś się popsuło po drodze)
 import pandas as pd
 h = len(files)/4
 
@@ -106,49 +80,3 @@ for j in range(4):
 
 
 
-
-text_clean = []
-text_n = []
-
-for i in range(len(text)):  
-    t = text[i]
-    if(len(t)>0):
-        if(t.count("\n")/len(t)>0.3):
-            t2 = t.replace("-\n", "").replace("\n\n", "\n").replace("\n", " ").replace("  ", "#").replace(" ", "").replace("#", " ")
-    
-        else:
-            t2 = t.replace("-\n", "").replace("\n\n", "\n").replace("\n", " ")
-    else:
-        t2 = ""
-    
-    text_clean.append(t2)
-    
-    t3 = normalize2(t2)
-    text_n.append(t3)
-
-
-
-
-
-
-
-
-
-for i in range(len(text_n)):
-    print("\n" + "############ " + str(i) + ". - " + files[i] + "############\n")
-    print(text_n[i][0:1000])
-
-for i in range(len(text_clean)):
-    print("\n" + "############ " + str(i) + ". - " + files[i] + "############\n")
-    print(text_clean[i][0:1000])
-
-
-print(text_n[10].replace("startstrona", "\n\n")[0:10000])
-
-
-#k = 13
-#t = remove_footer(text_n[k], 4)
-#print(t.replace("startstrona", "\n\n"))
-#
-#text[k][0:1000]
-#text_clean[k][0:1000]
