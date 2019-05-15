@@ -29,15 +29,20 @@ def normalize2(file):
 data0 = pd.read_csv(path + "text0.csv").fillna('')
 data1 = pd.read_csv(path + "text1.csv").fillna('')
 data2 = pd.read_csv(path + "text2.csv").fillna('')
+data3 = pd.read_csv(path + "text3.csv").fillna('')
+
 
 
 data = data0
 data = data.append(data1, ignore_index = True).drop(data0.columns[0], axis=1)
 data = data.append(data2, ignore_index = True).drop(data0.columns[0], axis=1)
+data = data.append(data3, ignore_index = True).drop(data0.columns[0], axis=1)
+
 
 del data0
 del data1
 del data2
+del data3
 
 
 text = data["text"]
@@ -64,7 +69,13 @@ for f in files:
     replace("Russian", "Russia").replace("Slovakians", "Slovakia").\
     replace("Spanish", "Spain").replace("Turks", "Turkey").\
     replace("Portugiese", "Portugal").\
-    replace("Malays", "X").replace("Xia", "Malaysia").replace("X", "Malaysia")
+    replace("Malays", "X").replace("Xia", "Malaysia").replace("X", "Malaysia").\
+    replace("German", "X").replace("Xy", "Germany").replace("X", "Germany").\
+    replace("Italian", "Italy").replace("Turkish", "Turkey").\
+    replace("Vietnamese", "Vietnam").replace("Saudi Arabia", "X").\
+    replace("United Arab Emirates", "XX").replace("Arab", "United Arab Emirates").\
+    replace("XX", "United Arab Emirates").replace("X", "Saudi Arabia").\
+    replace("American", "USA").replace("British", "UK").replace("English", "UK")
     
     nationality.append(xx)
 
@@ -112,7 +123,12 @@ for i in range(len(text)):
 
 
 
-ii = range(len(text))
+pd.DataFrame(text_clean).to_csv(path + "text_clean.csv")
+
+
+
+
+#ii = range(len(text))
 ii = range(100)
 
 for i in ii:
