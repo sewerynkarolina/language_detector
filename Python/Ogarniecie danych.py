@@ -140,8 +140,7 @@ text_cc = ['']*df.shape[0]
 for i in range(df.shape[0]):
     text_c[i] = prep_data.normalization(df['text'][i])
     text_c[i] = prep_data.normalize(text_c[i]) 
-#    df['text_c'][i] = prep_data.remove_intr_refe(df['text'][i]) 
-#    text_c[i] = prep_data.remove_footer(text_c[i], 4)
+
 
 
 for i in range(df.shape[0]):
@@ -149,11 +148,13 @@ for i in range(df.shape[0]):
     text_cc[i] = prep_data.remove_footer(text_cc[i], 4)
 
 
-df["text_c"] = text_cc
+df["text_c"] = text_c
+df["text_cc"] = text_cc
 
 
 
 df.to_csv(path + "text_clean.csv")
+df.to_pickle(path + "text_clean.pkl")
 
 
 
@@ -171,22 +172,23 @@ df.to_csv(path + "text_clean.csv")
 
 
 
-#ii = range(100)
-#ii = range(df.shape[0]-100, df.shape[0])
-#ii = range(df.shape[0]-2000, df.shape[0]-2000+100)
-#
-#
-#for i in ii:
-#    print("\x0c" + "############ " + str(i) + ". - " + files[i] + "############\n")
-#    print(text_cc[i][0:2000])
-#
-#for i in ii:
-#    print("\x0c" + "############ " + str(i) + ". - " + files[i] + "############\n")
-#    print(df["text"][i][0:1500])
+ii = range(100)
+ii = range(df.shape[0]-100, df.shape[0])
+ii = range(df.shape[0]-2000, df.shape[0]-2000+100)
 
-#
-#i = 85
-#text_c[i]
-#text_cc[i]
-#df["text"][i]
-#files[i]
+
+for i in ii:
+    print("\x0c" + "############ " + str(i) + ". - " + files[i] + "############\n")
+    print(text_cc[i][0:2000])
+
+for i in ii:
+    print("\x0c" + "############ " + str(i) + ". - " + files[i] + "############\n")
+    print(df["text"][i][0:1500])
+
+
+i = 85
+i = 90
+text_c[i][0:1000]
+text_cc[i][0:100000]
+df["text"][i][0:100000]
+files[i]
