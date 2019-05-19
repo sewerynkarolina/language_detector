@@ -9,6 +9,7 @@ import pandas as pd
 import re
 from nltk.stem import WordNetLemmatizer
 import nltk
+import unicodedata
 nltk.download('wordnet')
 import numpy as np
 from nltk.corpus import words
@@ -79,8 +80,6 @@ def remove_intr_refe(file):
     return(result)
     
 def remove_footer(file,page_number, n_gram=25):
-
-    
     for i in list(range(n_gram, 2,-1)):
         main_dict = Counter(dict(filter(lambda x: x[1] >= page_number/2 and "startstrona" in x[0], Counter(n_grams(file,i)).items())))
         if (main_dict!=Counter() ):
@@ -88,7 +87,7 @@ def remove_footer(file,page_number, n_gram=25):
     
     #Usuwam nagłówki
     for i in list(main_dict.keys()):
-        if(i in file):
+        if(i in file and 'startstrona' in file):
             file = file.replace(i,"")
             
     return(file)
@@ -155,7 +154,20 @@ def remove_short_words_from_df(df, column_name, max_length=3):
     for i in list(range(df.shape[0])):
         df[column_name][i]= remove_short_words_which_not_exists(df[column_name][i], max_length)
     return (df)
-    
+
+def normalization(text):
+    """
+    Normalizacja NFKD czyli np. wyłapywanie znaków ktorych nie ma, np. ﬁnd
+    """
+    return (unicodedata.normalize('NFKD', text).encode('utf-8', 'ignore').decode("utf-8"))
+
+def delete_nan(df, column_name='text'):
+    """
+    Zwraca dataframe z usunietymi rzędami w ktorych były nany w kolumnie column_name
+    """
+    df = df[pd.notnull(df['text'])]
+    return(df.reset_index().drop('index', axis=1))
+
 def vectorizer_n_files(df, list_of_files_indexes, column_name='0'):
     """
     Funkcja która przekształca kolumnę dataframu z tekstem na macierz zliczeń
