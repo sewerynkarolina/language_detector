@@ -4,9 +4,9 @@ from collections import Counter
 from string import punctuation
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
-import pandas as pd
+import pdftotext
 #import pdftotext
-import re
+
 from nltk.stem import WordNetLemmatizer
 import nltk
 import unicodedata
@@ -61,7 +61,30 @@ def read_files(file_paths):
             
     return (text_list, num_of_page)
 
+
+
 def normalize(file):
+    
+    
+    ################## Dodałem sporo rzeczy - MS ###################
+    #\x0c to znak specjalny końca strony
+    file = file.replace("\x0c", " startstrona ")
+    
+    if(len(file)>0):
+        if(file.count("\n")/len(file)>0.3):
+            file = file.replace("\n\n", "#").replace("-\n", "") .replace("\n", "").replace("#", " ")
+#            print(str(i) + "##########")
+        else:
+            file = file.replace("-\n", "").replace("\n\n", "\n").replace("\n", " ")
+    else:
+        file = ""
+    
+    file = file.replace("-", " ").replace("/", " ")
+    file = file.replace(" n t r o d u c t i o ", "ntroductio").\
+            replace(" e f e r e n c e s ", "eferences")
+            
+    ##################################################################
+    
     #zmiana na małe litery
     file = file.lower()
     #Zmieniamy np. ó na o
