@@ -97,12 +97,35 @@ def normalize(file):
     file = re.sub(' +', ' ', file)
     return(file)
 
-def remove_intr_refe(file):
+def remove_intr_refe0(file):
     head, sep, result = file.partition("ntroductio")
     result, sep, tail = result.rpartition("eferences")
     return(result)
     
-def remove_footer(file,page_number, n_gram=25):
+
+def remove_intr_refe(result):
+    l = len(result)
+    if(l==0):
+        return(result)
+    
+    head, sep, result1 = result.partition("ntroductio")
+    l1 = len(result1)
+    if(l1/l>0.6):
+        result = result1
+        l = l1
+
+    result1, sep, tail = result.rpartition("eferences")
+    l1 = len(result1)
+    if(l1/l>0.6):
+        result = result1
+        l = l1
+        
+    result = re.sub("^n ", "", result)
+    result = re.sub(" r$", "", result)
+    return(result)
+    
+# stara wersja
+def remove_footer0(file,page_number, n_gram=25):
     for i in list(range(n_gram, 2,-1)):
         main_dict = Counter(dict(filter(lambda x: x[1] >= page_number/2 and "startstrona" in x[0], Counter(n_grams(file,i)).items())))
         if (main_dict!=Counter() ):
@@ -110,11 +133,28 @@ def remove_footer(file,page_number, n_gram=25):
     
     #Usuwam nagłówki
     for i in list(main_dict.keys()):
+        print(i)
         if(i in file and 'startstrona' in file):
             file = file.replace(i,"")
             
     return(file)
 
+# Wersja nowa.
+def remove_footer(file,page_number, n_gram=25):
+    for i in list(range(n_gram, 2,-1)):
+        main_dict = Counter(dict(filter(lambda x: x[1] >= page_number/2 and "startstrona" in x[0], Counter(n_grams(file,i)).items())))
+        if (main_dict==Counter()):
+            continue
+    # Jeżeli znalazł jedną, to nie znaczy, że kończymy zabawę.
+    # Stopka i nagłowek mogą być różnej długości. Wcześniej usunęłoby 
+    # tylko to dłuższe.
+    
+    #Usuwam nagłówki
+        for r in list(main_dict.keys()):
+            if(r in file and 'startstrona' in file):
+                file = file.replace(r," startstrona ").replace("  ", " ")
+            
+    return(file)
 
 
 def remove_short_words(text, max_length=3):
