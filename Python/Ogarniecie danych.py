@@ -116,7 +116,7 @@ def get_number_of_pages2(df):
     Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
     """
     num_of_pages = []
-    
+    files = df["label"]
     for i in range(len(files)):
         num_of_pages.append(df["text"][i].count("\x0c"))
     return num_of_pages
@@ -124,15 +124,12 @@ def get_number_of_pages2(df):
 
 # Liczenie stron wywala sie dla niektorych plikow :(
 
-df = pd.read_pickle(path + "text_clean.pkl")
+#df = pd.read_pickle(path + "text_clean.pkl")
 #df=df.head(1000)
-files = df["label"]
-text_cc = df["text_cc"]
+#files = df["label"]
+#text_cc = df["text_cc"]
 
 
-#pages = get_number_of_pages(files)
-#pages2 = get_number_of_pages2(df)
-#df["no_pages"] = pages
 
 
 
@@ -144,9 +141,9 @@ df["text_c"] = text_c
 
 
 #df = pd.read_pickle(path + "text_clean.pkl")
+#files = df["label"]
+#text_c = df["text_c"]
 
-files = df["label"]
-text_c = df["text_c"]
 text_cc = ['']*df.shape[0]
 for i in range(df.shape[0]):
     text_cc[i] = prep_data.remove_intr_refe(text_c[i]) 
@@ -157,6 +154,12 @@ for i in range(df.shape[0]):
 df["text_cc"] = text_cc
 
 
+
+
+#pages = get_number_of_pages(files)
+pages2 = get_number_of_pages2(df)
+#df["no_pages"] = pages
+df["pages"]=pages2
 
 df.to_pickle(path + "text_clean.pkl")
 
@@ -183,13 +186,15 @@ ii = range(df.shape[0]-2000, df.shape[0]-2000+100)
 
 for i in ii:
     print("\n" + "############ " + str(i) + ". - " + files[i] + "############\n")
-    print(text_cc[i][0:2000])
+    print(text_cc[i][0:10000])
 
 for i in ii:
     print("\n" + "############ " + str(i) + ". - " + files[i] + "############\n")
     print(df["text"][i][0:1500])
 
+df["text"][97]
 
+files[98]
 i = 85
 i = 98
 i = 860
@@ -212,7 +217,7 @@ for i in range(df.shape[0]):
 
 k
 
-i = 652
+i = 62
 t=df["text"][i]
 tt=prep_data.normalization(t)
 tt
@@ -221,9 +226,11 @@ tt
 prep_data.remove_footer0(tt, 4)
 tasd = prep_data.remove_intr_refe(tt)
 tasd
-
+files[62]
 asd = df.iloc[i,:]
 asd
 
 
-dff=df.iloc[0:100,:]
+
+
+

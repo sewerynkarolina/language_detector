@@ -81,7 +81,9 @@ def normalize(file):
     
     file = file.replace("-", " ").replace("/", " ")
     file = file.replace(" n t r o d u c t i o ", "ntroductio").\
-            replace(" e f e r e n c e s ", "eferences")
+            replace(" e f e r e n c e s ", "eferences").\
+            replace("a b s t r a c t", "abstract").\
+            replace("b i b l i o g r a p h y", "bibliography")
             
     ##################################################################
     
@@ -105,8 +107,7 @@ def remove_intr_refe0(file):
 
 def remove_intr_refe(file):
     result = file
-    result=result.replace("a b s t r a c t", "abstract").\
-    replace("b i b l i o g r a p h y", "bibliography")
+
     l = len(result)
     if(l==0):
         return(result)
@@ -265,3 +266,18 @@ def vectorizer_n_files(df, list_of_files_indexes, column_name='0'):
     new_df = pd.DataFrame(X.toarray(), columns=vec.get_feature_names())
     
     return(new_df,df.iloc[list_of_files_indexes]['countries'].values ) 
+
+
+
+
+
+
+def get_number_of_pages2(df):
+    """
+    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
+    """
+    num_of_pages = []
+    files = df["label"]
+    for i in range(len(files)):
+        num_of_pages.append(df["text"][i].count("\x0c"))
+    return num_of_pages
