@@ -105,6 +105,8 @@ def remove_intr_refe0(file):
 
 def remove_intr_refe(file):
     result = file
+    result=result.replace("a b s t r a c t", "abstract").\
+    replace("b i b l i o g r a p h y", "bibliography")
     l = len(result)
     if(l==0):
         return(result)
@@ -131,11 +133,9 @@ def remove_intr_refe(file):
     if(k1 > k2):
         result1, sep, tail = result.rpartition("bibliography")
         l1 = len(result1)
-        print(l1)
-        print(l)
         if(l1/l>0.6):
             result = result1
-            print("dsfsdfssdfsdf")
+   
            
     elif(k2 > k1):
         result1, sep, tail = result.rpartition("eferences")

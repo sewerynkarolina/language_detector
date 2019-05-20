@@ -125,7 +125,7 @@ def get_number_of_pages2(df):
 # Liczenie stron wywala sie dla niektorych plikow :(
 
 df = pd.read_pickle(path + "text_clean.pkl")
-df=df.head(1000)
+#df=df.head(1000)
 files = df["label"]
 text_cc = df["text_cc"]
 
@@ -145,12 +145,13 @@ df["text_c"] = text_c
 
 #df = pd.read_pickle(path + "text_clean.pkl")
 
-
+files = df["label"]
 text_c = df["text_c"]
 text_cc = ['']*df.shape[0]
 for i in range(df.shape[0]):
     text_cc[i] = prep_data.remove_intr_refe(text_c[i]) 
     text_cc[i] = prep_data.remove_footer(text_cc[i], 4)
+    text_cc[i] = text_cc[i].replace("startstrona", "").replace("  ", " ").replace("  ", " ")
     if(i%500 == 0):
         print(i)
 df["text_cc"] = text_cc
@@ -181,11 +182,11 @@ ii = range(df.shape[0]-2000, df.shape[0]-2000+100)
 
 
 for i in ii:
-    print("\x0c" + "############ " + str(i) + ". - " + files[i] + "############\n")
+    print("\n" + "############ " + str(i) + ". - " + files[i] + "############\n")
     print(text_cc[i][0:2000])
 
 for i in ii:
-    print("\x0c" + "############ " + str(i) + ". - " + files[i] + "############\n")
+    print("\n" + "############ " + str(i) + ". - " + files[i] + "############\n")
     print(df["text"][i][0:1500])
 
 
@@ -205,7 +206,7 @@ for i in range(df.shape[0]):
     l = len(df["text"][i])
     l_c = len(df["text_c"][i])
     l_cc = len(df["text_cc"][i])
-    if((l_c == 0) & (l > 0)):
+    if((l_cc == 0) & (l > 0)):
         print(i)
         k = k+1
 
@@ -223,3 +224,6 @@ tasd
 
 asd = df.iloc[i,:]
 asd
+
+
+dff=df.iloc[0:100,:]
