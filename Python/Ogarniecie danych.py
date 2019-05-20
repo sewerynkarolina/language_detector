@@ -124,9 +124,11 @@ def get_number_of_pages2(df):
 
 # Liczenie stron wywala sie dla niektorych plikow :(
 
+df = pd.read_pickle(path + "text_clean.pkl")
+df=df.head(1000)
+files = df["label"]
+text_cc = df["text_cc"]
 
-#df=df.head(100)
-#files = df["label"]
 
 #pages = get_number_of_pages(files)
 #pages2 = get_number_of_pages2(df)
@@ -135,18 +137,22 @@ def get_number_of_pages2(df):
 
 
 text_c = ['']*df.shape[0]
-text_cc = ['']*df.shape[0]
-
 for i in range(df.shape[0]):
     text_c[i] = prep_data.normalization(df['text'][i])
     text_c[i] = prep_data.normalize(text_c[i]) 
 df["text_c"] = text_c
 
 
+#df = pd.read_pickle(path + "text_clean.pkl")
+
+
 text_c = df["text_c"]
+text_cc = ['']*df.shape[0]
 for i in range(df.shape[0]):
     text_cc[i] = prep_data.remove_intr_refe(text_c[i]) 
     text_cc[i] = prep_data.remove_footer(text_cc[i], 4)
+    if(i%500 == 0):
+        print(i)
 df["text_cc"] = text_cc
 
 
@@ -184,22 +190,36 @@ for i in ii:
 
 
 i = 85
-i = 90
-text_c[i][0:1000]
-text_cc[i][0:100000]
+i = 98
+i = 860
+
+print(df["text"][i][0:100000].replace("\x0c", "\n\n"))
+print(text_c[i][0:1000000].replace("startstrona", "\n\n"))
+text_cc[i][0:1000000]
 df["text"][i][0:100000]
 files[i]
 
 
-
+k = 0
 for i in range(df.shape[0]):
     l = len(df["text"][i])
+    l_c = len(df["text_c"][i])
     l_cc = len(df["text_cc"][i])
-    if((l_cc == 0) & (l > 0)):
+    if((l_c == 0) & (l > 0)):
         print(i)
+        k = k+1
 
+k
 
+i = 652
+t=df["text"][i]
+tt=prep_data.normalization(t)
+tt
+tt = prep_data.normalize(tt)
+tt
+prep_data.remove_footer0(tt, 4)
+tasd = prep_data.remove_intr_refe(tt)
+tasd
 
-
-
-
+asd = df.iloc[i,:]
+asd

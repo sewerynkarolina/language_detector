@@ -103,22 +103,46 @@ def remove_intr_refe0(file):
     return(result)
     
 
-def remove_intr_refe(result):
+def remove_intr_refe(file):
+    result = file
     l = len(result)
     if(l==0):
         return(result)
+        
+    k1 = result.find("abstract")
+    k2 = result.find("troductio")
     
-    head, sep, result1 = result.partition("ntroductio")
-    l1 = len(result1)
-    if(l1/l>0.6):
-        result = result1
-        l = l1
+    if((k1 < k2) & (k1!=-1)):
+        head, sep, result1 = result.partition("abstract")
+        l1 = len(result1)
+        if(l1/l>0.6):
+            result = result1
+            
+    elif((k2 < k1) & (k1!=-1)):
+        head, sep, result1 = result.partition("ntroductio")
+        l1 = len(result1)
+        if(l1/l>0.6):
+            result = result1
+            
 
-    result1, sep, tail = result.rpartition("eferences")
-    l1 = len(result1)
-    if(l1/l>0.6):
-        result = result1
-        l = l1
+    k1 = result.find("bibliography")
+    k2 = result.find("eferences")
+    
+    if(k1 > k2):
+        result1, sep, tail = result.rpartition("bibliography")
+        l1 = len(result1)
+        print(l1)
+        print(l)
+        if(l1/l>0.6):
+            result = result1
+            print("dsfsdfssdfsdf")
+           
+    elif(k2 > k1):
+        result1, sep, tail = result.rpartition("eferences")
+        l1 = len(result1)
+        if(l1/l>0.6):
+            result = result1
+           
         
     result = re.sub("^n ", "", result)
     result = re.sub(" r$", "", result)
