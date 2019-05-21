@@ -273,11 +273,45 @@ def vectorizer_n_files(df, list_of_files_indexes, column_name='0'):
 
 
 def get_number_of_pages2(df):
-    """
-    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
-    """
+
     num_of_pages = []
     files = df["label"]
     for i in range(len(files)):
         num_of_pages.append(df["text"][i].count("\x0c"))
     return num_of_pages
+
+
+
+###################
+# Wczytanie danych
+###################
+    
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
+from io import StringIO
+# from six import BytesIO as StringIO
+
+def convert_pdf_to_txt(path):
+    rsrcmgr = PDFResourceManager()
+    retstr = StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+    fp = open(path, 'rb')
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+    password = ""
+    maxpages = 0
+    caching = True
+    pagenos=set()
+
+    for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,caching=caching, check_extractable=True):
+        interpreter.process_page(page)
+
+    text = retstr.getvalue()
+
+    fp.close()
+    device.close()
+    retstr.close()
+    return text
