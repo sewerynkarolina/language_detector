@@ -42,24 +42,24 @@ def n_grams(text, n=2):
     
     return n_grams
     
-def read_files(file_paths):
-    text_list = []
-    num_of_page = [0]*len(file_paths)
-    it = 0
-    for text in file_paths:
-        with open(text, "rb") as f:
-            pdf = pdftotext.PDF(f)
-            el_of_list = ''
-            #Ponieważ page in pdf  - to jest strona z artykułu to łącze stringi, pewnie to można lepiej
+# def read_files(file_paths):
+#     text_list = []
+#     num_of_page = [0]*len(file_paths)
+#     it = 0
+#     for text in file_paths:
+#         with open(text, "rb") as f:
+#             pdf = pdftotext.PDF(f)
+#             el_of_list = ''
+#             #Ponieważ page in pdf  - to jest strona z artykułu to łącze stringi, pewnie to można lepiej
   
-            for page in pdf:
-                el_of_list = el_of_list+" startstrona "+ page
-                num_of_page[it] += 1
-            it+=1
+#             for page in pdf:
+#                 el_of_list = el_of_list+" startstrona "+ page
+#                 num_of_page[it] += 1
+#             it+=1
                 
-            text_list.append(el_of_list)  
+#             text_list.append(el_of_list)  
             
-    return (text_list, num_of_page)
+#     return (text_list, num_of_page)
 
 
 
@@ -271,20 +271,20 @@ def vectorizer_n_files(df, list_of_files_indexes, column_name='0'):
 
 
 
-import pdftotext
-def get_number_of_pages(file_paths):
-    """
-    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
-    """
-    num_of_page = [0]*len(file_paths)
-    it = 0
-    for text in file_paths:
-        with open(text, "rb") as f:
-            pdf = pdftotext.PDF(f)
-            for page in pdf:
-                num_of_page[it] += 1
-            it+=1 
-    return num_of_page
+#import 
+# def get_number_of_pages(file_paths):
+#     """
+#     Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
+#     """
+#     num_of_page = [0]*len(file_paths)
+#     it = 0
+#     for text in file_paths:
+#         with open(text, "rb") as f:
+#             pdf = pdftotext.PDF(f)
+#             for page in pdf:
+#                 num_of_page[it] += 1
+#             it+=1 
+#     return num_of_page
 
 
 from PyPDF2 import PdfFileReader
