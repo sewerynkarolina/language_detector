@@ -271,9 +271,50 @@ def vectorizer_n_files(df, list_of_files_indexes, column_name='0'):
 
 
 
+import pdftotext
+def get_number_of_pages(file_paths):
+    """
+    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
+    """
+    num_of_page = [0]*len(file_paths)
+    it = 0
+    for text in file_paths:
+        with open(text, "rb") as f:
+            pdf = pdftotext.PDF(f)
+            for page in pdf:
+                num_of_page[it] += 1
+            it+=1 
+    return num_of_page
 
+
+from PyPDF2 import PdfFileReader
+
+def get_number_of_pages1(file_paths):
+    """
+    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
+    """
+    num_of_pages = []
+    for i in range(len(file_paths)):
+        try:
+            pdf = PdfFileReader(open(files[i],'rb'))
+            if pdf.isEncrypted:
+                pdf.decrypt('')
+            num_of_pages.append(pdf.getNumPages())
+        except:
+            print(i)
+            num_of_pages.append(0)
+    return num_of_pages
+# wywala sie dla niektorych plikow :(
+
+
+
+# Znaczniki konca strony z zaczytanych tekstow
+# Najszybszy sposób. Jeśli nie zaczytała się całość, 
+# to daje nam tyle stron ile się zaczytało.
 def get_number_of_pages2(df):
-
+    """
+    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
+    """
     num_of_pages = []
     files = df["label"]
     for i in range(len(files)):

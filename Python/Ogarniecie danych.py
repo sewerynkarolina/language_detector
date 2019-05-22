@@ -72,57 +72,9 @@ name_list=np.array(name_list)
 
 
 import prepare_data as prep_data
-from PyPDF2 import PdfFileReader
-import PyPDF2
 
 
-import pdftotext
-def get_number_of_pages(file_paths):
-    """
-    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
-    """
-    num_of_page = [0]*len(file_paths)
-    it = 0
-    for text in file_paths:
-        with open(text, "rb") as f:
-            pdf = pdftotext.PDF(f)
-            for page in pdf:
-                num_of_page[it] += 1
-            it+=1 
-    return num_of_page
 
-
-# Zmieniłem funkcję Kasi, dziala znacznie szybciej
-def get_number_of_pages1(file_paths):
-    """
-    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
-    """
-    num_of_pages = []
-    for i in range(len(file_paths)):
-        try:
-            pdf = PdfFileReader(open(files[i],'rb'))
-            if pdf.isEncrypted:
-                pdf.decrypt('')
-            num_of_pages.append(pdf.getNumPages())
-        except:
-            print(i)
-            num_of_pages.append(0)
-    return num_of_pages
-
-
-# Znaczniki konca strony z zaczytanych tekstow
-def get_number_of_pages2(df):
-    """
-    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
-    """
-    num_of_pages = []
-    files = df["label"]
-    for i in range(len(files)):
-        num_of_pages.append(df["text"][i].count("\x0c"))
-    return num_of_pages
-
-
-# Liczenie stron wywala sie dla niektorych plikow :(
 
 #df = pd.read_pickle(path + "text_clean.pkl")
 #df=df.head(1000)
@@ -130,8 +82,6 @@ def get_number_of_pages2(df):
 #text_cc = df["text_cc"]
 
 
-
-#tu skonczylem
 
 text_c = ['']*df.shape[0]
 for i in range(df.shape[0]):
@@ -159,8 +109,7 @@ df["text_cc"] = text_cc
 
 
 #pages = get_number_of_pages(files)
-pages = get_number_of_pages2(df)
-#df["no_pages"] = pages
+pages = prep_data.get_number_of_pages2(df)
 df["pages"]=pages
 
 df.to_pickle(path + "text_clean.pkl")
@@ -206,10 +155,12 @@ files[i]
 
 
 k = 0
+ll_cc = []
 for i in range(df.shape[0]):
     l = len(df["text"][i])
     l_c = len(df["text_c"][i])
     l_cc = len(df["text_cc"][i])
+    ll_cc.append(l_cc)
     if((l_cc == 0) & (l > 0)):
         print(i)
         k = k+1
@@ -219,7 +170,9 @@ k
 
 
 sum(np.array(pages)<9)
-sum((pages >0) & (pages<9))
+sum((pages >0) & (pages<6))
+sum(pages == 0)
+sum(np.array(ll_cc) == 0)
 
 
 i0 = np.where((pages >0) & (pages<9))[0][1000]
