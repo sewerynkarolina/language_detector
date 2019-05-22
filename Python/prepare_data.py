@@ -4,7 +4,7 @@ from collections import Counter
 from string import punctuation
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
-import pdftotext
+#import pdftotext
 #import pdftotext
 
 from nltk.stem import WordNetLemmatizer
