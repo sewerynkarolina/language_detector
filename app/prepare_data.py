@@ -15,6 +15,7 @@ import numpy as np
 from nltk.corpus import words
 nltk.download('words')
 
+
 def n_grams(text, n=2):
     '''
     wymagania: modul re
@@ -27,49 +28,49 @@ def n_grams(text, n=2):
         raise NameError("Zly typ argumentu text, text musi byc typu str")
     if type(n) != int or n<2:
         raise NameError("n musi byc liczba calkowita, n>2")
-    
-    
+
+
     text = text.lower()
     tokens = re.sub(r'[^a-zA-Z0-9\s]', ' ', text).split() #slowa z text zapisane do listy
-    
+
     n_grams=list() #miejsce na n gramy
-    
+
     for i in range(len(tokens)-n+1):
-        s = tokens[i] 
+        s = tokens[i]
         for j in range(1,n):
             s = s + " " + tokens[i+j]
         n_grams.append(s)
-    
+
     return n_grams
-    
-# def read_files(file_paths):
-#     text_list = []
-#     num_of_page = [0]*len(file_paths)
-#     it = 0
-#     for text in file_paths:
-#         with open(text, "rb") as f:
-#             pdf = pdftotext.PDF(f)
-#             el_of_list = ''
-#             #Ponieważ page in pdf  - to jest strona z artykułu to łącze stringi, pewnie to można lepiej
-  
-#             for page in pdf:
-#                 el_of_list = el_of_list+" startstrona "+ page
-#                 num_of_page[it] += 1
-#             it+=1
-                
-#             text_list.append(el_of_list)  
-            
-#     return (text_list, num_of_page)
+
+def read_files(file_paths):
+    text_list = []
+    num_of_page = [0]*len(file_paths)
+    it = 0
+    for text in file_paths:
+        with open(text, "rb") as f:
+            pdf = pdftotext.PDF(f)
+            el_of_list = ''
+            #Ponieważ page in pdf  - to jest strona z artykułu to łącze stringi, pewnie to można lepiej
+
+            for page in pdf:
+                el_of_list = el_of_list+" startstrona "+ page
+                num_of_page[it] += 1
+            it+=1
+
+            text_list.append(el_of_list)
+
+    return (text_list, num_of_page)
 
 
 
 def normalize(file):
-    
-    
+
+
     ################## Dodałem sporo rzeczy - MS ###################
     #\x0c to znak specjalny końca strony
     file = file.replace("\x0c", " startstrona ")
-    
+
     if(len(file)>0):
         if(file.count("\n")/len(file)>0.3):
             file = file.replace("\n\n", "#").replace("-\n", "") .replace("\n", "").replace("#", " ")
@@ -78,15 +79,15 @@ def normalize(file):
             file = file.replace("-\n", "").replace("\n\n", "\n").replace("\n", " ")
     else:
         file = ""
-    
+
     file = file.replace("-", " ").replace("/", " ")
     file = file.replace(" n t r o d u c t i o ", "ntroductio").\
             replace(" e f e r e n c e s ", "eferences").\
             replace("a b s t r a c t", "abstract").\
             replace("b i b l i o g r a p h y", "bibliography")
-            
+
     ##################################################################
-    
+
     #zmiana na małe litery
     file = file.lower()
     #Zmieniamy np. ó na o
@@ -103,7 +104,7 @@ def remove_intr_refe0(file):
     head, sep, result = file.partition("ntroductio")
     result, sep, tail = result.rpartition("eferences")
     return(result)
-    
+
 
 def remove_intr_refe(file):
     result = file
@@ -111,57 +112,57 @@ def remove_intr_refe(file):
     l = len(result)
     if(l==0):
         return(result)
-        
+
     k1 = result.find("abstract")
     k2 = result.find("troductio")
-    
+
     if((k1 < k2) & (k1!=-1)):
         head, sep, result1 = result.partition("abstract")
         l1 = len(result1)
         if(l1/l>0.6):
             result = result1
-            
+
     elif((k2 < k1) & (k1!=-1)):
         head, sep, result1 = result.partition("ntroductio")
         l1 = len(result1)
         if(l1/l>0.6):
             result = result1
-            
+
 
     k1 = result.find("bibliography")
     k2 = result.find("eferences")
-    
+
     if(k1 > k2):
         result1, sep, tail = result.rpartition("bibliography")
         l1 = len(result1)
         if(l1/l>0.6):
             result = result1
-   
-           
+
+
     elif(k2 > k1):
         result1, sep, tail = result.rpartition("eferences")
         l1 = len(result1)
         if(l1/l>0.6):
             result = result1
-           
-        
+
+
     result = re.sub("^n ", "", result)
     result = re.sub(" r$", "", result)
     return(result)
-    
+
 # stara wersja
 def remove_footer0(file,page_number, n_gram=25):
     for i in list(range(n_gram, 2,-1)):
         main_dict = Counter(dict(filter(lambda x: x[1] >= page_number/2 and "startstrona" in x[0], Counter(n_grams(file,i)).items())))
         if (main_dict!=Counter() ):
             break
-    
+
     #Usuwam nagłówki
     for i in list(main_dict.keys()):
         print(i)
         if(i in file and 'startstrona' in file):
             file = file.replace(i,"")
-            
+
     return(file)
 
 # Wersja nowa.
@@ -171,33 +172,33 @@ def remove_footer(file,page_number, n_gram=25):
         if (main_dict==Counter()):
             continue
     # Jeżeli znalazł jedną, to nie znaczy, że kończymy zabawę.
-    # Stopka i nagłowek mogą być różnej długości. Wcześniej usunęłoby 
+    # Stopka i nagłowek mogą być różnej długości. Wcześniej usunęłoby
     # tylko to dłuższe.
-    
+
     #Usuwam nagłówki
         for r in list(main_dict.keys()):
             if(r in file and 'startstrona' in file):
                 file = file.replace(r," startstrona ").replace("  ", " ")
-            
+
     return(file)
 
 
 def remove_short_words(text, max_length=3):
     """
     usuwa z tekstu slowa o dlugosci mniejszej lub rownej od max_length
-    
+
     argumenty:
     text - wejsciowy test
     max_length - maksymalna dlugosc slow do usuniecia
-    
+
     zwraca:
     tekst z usunietymi krotkimi slowami
     """
     short_word = re.compile(r'\W*\b\w{1,' + str(max_length) + r'}\b')
     return short_word.sub('', text)
-    
-    
-    
+
+
+
 def merge_df(df, df2):
     """
     Łączenie dwóch csv-ek i stworzenie kolumn z autorem i krajem
@@ -264,57 +265,16 @@ def vectorizer_n_files(df, list_of_files_indexes, column_name='0'):
     vec = CountVectorizer()
     X = vec.fit_transform(df.iloc[list_of_files_indexes][column_name])
     new_df = pd.DataFrame(X.toarray(), columns=vec.get_feature_names())
-    
-    return(new_df,df.iloc[list_of_files_indexes]['countries'].values ) 
+
+    return(new_df,df.iloc[list_of_files_indexes]['countries'].values )
 
 
 
 
 
-#import 
-# def get_number_of_pages(file_paths):
-#     """
-#     Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
-#     """
-#     num_of_page = [0]*len(file_paths)
-#     it = 0
-#     for text in file_paths:
-#         with open(text, "rb") as f:
-#             pdf = pdftotext.PDF(f)
-#             for page in pdf:
-#                 num_of_page[it] += 1
-#             it+=1 
-#     return num_of_page
 
-
-from PyPDF2 import PdfFileReader
-
-def get_number_of_pages1(file_paths):
-    """
-    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
-    """
-    num_of_pages = []
-    for i in range(len(file_paths)):
-        try:
-            pdf = PdfFileReader(open(files[i],'rb'))
-            if pdf.isEncrypted:
-                pdf.decrypt('')
-            num_of_pages.append(pdf.getNumPages())
-        except:
-            print(i)
-            num_of_pages.append(0)
-    return num_of_pages
-# wywala sie dla niektorych plikow :(
-
-
-
-# Znaczniki konca strony z zaczytanych tekstow
-# Najszybszy sposób. Jeśli nie zaczytała się całość, 
-# to daje nam tyle stron ile się zaczytało.
 def get_number_of_pages2(df):
-    """
-    Przyjmuje listę ścieżek pdfów, zwraca listę odpowiadających stron
-    """
+
     num_of_pages = []
     files = df["label"]
     for i in range(len(files)):
@@ -326,7 +286,7 @@ def get_number_of_pages2(df):
 ###################
 # Wczytanie danych
 ###################
-    
+
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
@@ -348,6 +308,33 @@ def convert_pdf_to_txt(path):
     pagenos=set()
 
     for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,caching=caching, check_extractable=True):
+        interpreter.process_page(page)
+
+    text = retstr.getvalue()
+
+    fp.close()
+    device.close()
+    retstr.close()
+    return text
+
+
+# na potrzeby aplikacji
+def read_file(pdf):
+    '''
+    Wczytuje plik pdf
+    '''
+    rsrcmgr = PDFResourceManager()
+    retstr = StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+    password = ""
+    maxpages = 0
+    caching = True
+    pagenos=set()
+
+    for page in PDFPage.get_pages(pdf, pagenos, maxpages=maxpages, password=password,caching=caching, check_extractable=True):
         interpreter.process_page(page)
 
     text = retstr.getvalue()
