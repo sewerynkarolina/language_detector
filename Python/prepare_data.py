@@ -226,6 +226,14 @@ def make_lemmatization(df,column_name ='0'):
         df[column_name][i]=string
     return(df)
 
+def make_lemmatization_for_one_file(tekst):
+    wordnet_lemmatizer = WordNetLemmatizer()
+    string  = ''
+    sentence_words = nltk.word_tokenize(tekst)
+    for word in sentence_words:
+        string = string + wordnet_lemmatizer.lemmatize(word, pos="v") + ' '
+    return(string)
+
 def remove_short_words_which_not_exists(text, max_length=3):
     """
     Wewnętrzna funkcja pomocnicza do remove_short_words_from_df
