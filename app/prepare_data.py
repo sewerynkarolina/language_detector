@@ -15,6 +15,8 @@ import numpy as np
 from nltk.corpus import words
 nltk.download('words')
 
+import base64
+import io
 
 def n_grams(text, n=2):
     '''
@@ -293,6 +295,35 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from io import StringIO
 # from six import BytesIO as StringIO
+
+def convert_dash_content_to_txt(contents):
+    if contents is not None:
+        content_type, content_string = contents.split(',')
+
+        decoded = base64.b64decode(content_string)
+        rsrcmgr = PDFResourceManager()
+        retstr = StringIO()
+        codec = 'utf-8'
+        laparams = LAParams()
+        device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+        fp = io.BytesIO(decoded)
+        interpreter = PDFPageInterpreter(rsrcmgr, device)
+        password = ""
+        maxpages = 0
+        caching = True
+        pagenos=set()
+
+        for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,caching=caching, check_extractable=True):
+            interpreter.process_page(page)
+
+        text = retstr.getvalue()
+
+        fp.close()
+        device.close()
+        retstr.close()
+        return text
+
+
 
 def convert_pdf_to_txt(path):
     rsrcmgr = PDFResourceManager()
