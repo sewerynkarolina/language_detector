@@ -264,16 +264,18 @@ def delete_nan(df, column_name='text'):
     df = df[pd.notnull(df['text'])]
     return(df.reset_index().drop('index', axis=1))
 
-def vectorizer_n_files(df, list_of_files_indexes, column_name='0'):
+def vectorizer_n_files(df, list_of_files_indexes, column_name='0', min_gram, max_gram):
     """
     Funkcja która przekształca kolumnę dataframu z tekstem na macierz zliczeń
     zwracamy macierz i listę krajów
     """
-    vec = CountVectorizer()
+    vec = CountVectorizer(ngram_range=(min_gram,max_gram))
     X = vec.fit_transform(df.iloc[list_of_files_indexes][column_name])
     new_df = pd.DataFrame(X.toarray(), columns=vec.get_feature_names())
     
     return(new_df,df.iloc[list_of_files_indexes]['countries'].values ) 
+
+
 
 
 
