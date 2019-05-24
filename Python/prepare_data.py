@@ -284,8 +284,7 @@ def vectorizer_for_one_file(text, min_gram, max_gram):
     X = vec.fit_transform([text])
     new_df = pd.DataFrame(X.toarray(), columns=vec.get_feature_names())
     
-    return(new_df ) 
-
+    return(new_df) 
 
 
 
@@ -325,6 +324,35 @@ def get_number_of_pages1(file_paths):
             num_of_pages.append(0)
     return num_of_pages
 # wywala sie dla niektorych plikow :(
+
+
+def prepare_to_model(file, columns, pages):
+    """
+    Funkcja, która przyjmuje plik jako string,
+    czyści, tworzy 1gramy, ..., 5 gramy.
+    columns - nazwy predyktorów w modelu,
+    gdy brak predyktora w pliku, tworzy pustą komórkę z wartością zero
+    """
+ 
+    file = prep_data.normalization(file)
+    file = prep_data.normalize(file) 
+    file = prep_data.remove_intr_refe(file)
+    file = prep_data.remove_footer(file, pages)
+    file = file.replace("startstrona", "").replace("  ", " ").replace("  ", " ")
+    file = prep_data.make_lemmatization_for_one_file(file)
+    df = vectorizer_for_one_file(file, 1, 5)
+    
+    diff_to_del = list(set(df.columns)-set(columns))
+    diff_to_add = list(set(columns)-set(df.columns))
+    
+    list_of_columns1 = set(df)-set(diff_to_del)
+    list_of_columns2 = list_of_columns1.union(diff_to_add)
+    
+    df_ = pd.DataFrame([[0]*len(diff_to_add)], columns=diff_to_add)
+    to_pred = pd.DataFrame(pd.concat([df_,df[list_of_columns1]], axis=0).fillna(0).sum()).transpose()
+    
+    return(to_pred)
+
 
 
 
