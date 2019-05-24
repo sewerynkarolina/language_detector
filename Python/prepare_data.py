@@ -284,7 +284,7 @@ def vectorizer_for_one_file(text, min_gram, max_gram):
     X = vec.fit_transform([text])
     new_df = pd.DataFrame(X.toarray(), columns=vec.get_feature_names())
     
-    return(new_df,df.iloc[list_of_files_indexes]['countries'].values ) 
+    return(new_df ) 
 
 
 
