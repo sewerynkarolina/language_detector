@@ -6,8 +6,10 @@ from io import BytesIO
 import prepare_data as prepare_data
 import base64
 import io
+
 from sklearn.externals import joblib
 from sklearn.linear_model import LogisticRegression
+import pandas as p
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css',
         'https://github.com/plotly/dash-salesforce-crm/blob/master/static/s8.css',
@@ -41,7 +43,9 @@ app.layout = html.Div([
         multiple=False
     )),
 
-    html.Div(id='output-data-upload')
+    html.Div(id='output-data-upload'),
+
+    html.Div(id='prediction_div')
 ])
 
 
@@ -51,9 +55,18 @@ app.layout = html.Div([
 Output('output-data-upload', 'children'),
 [Input('upload-data', 'contents')])
 def update(contents):
-    pass
     if contents is not None:
         return prepare_data.convert_dash_content_to_txt(contents)
+
+@app.callback(
+Output('prediction_div', 'children'),
+[Input('output-data-upload', 'children')])
+def make_prediction(contents):
+    if contents is None:
+        return None
+    column_names = pd.read_csv("model_base_columns.csv")
+    pages = contents[1]
+    return prepare_data.prepare_to_model(contents[0], column_names, pages)
 
 
 
