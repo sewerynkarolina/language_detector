@@ -284,6 +284,52 @@ def get_number_of_pages2(df):
     return num_of_pages
 
 
+def make_lemmatization_for_one_file(tekst):
+    wordnet_lemmatizer = WordNetLemmatizer()
+    string  = ''
+    sentence_words = nltk.word_tokenize(tekst)
+    for word in sentence_words:
+        string = string + wordnet_lemmatizer.lemmatize(word, pos="v") + ' '
+    return(string)
+
+
+def vectorizer_for_one_file(text, min_gram, max_gram):
+    """
+    Funkcja która przekształca teskst a macierz zliczeń
+    zwracamy macierz i listę krajów
+    """
+    vec = CountVectorizer(ngram_range=(min_gram,max_gram))
+    X = vec.fit_transform([text])
+    new_df = pd.DataFrame(X.toarray(), columns=vec.get_feature_names())
+
+    return(new_df) 
+
+def prepare_to_model(file, columns, pages):
+    """
+    Funkcja, która przyjmuje plik jako string,
+    czyści, tworzy 1gramy, ..., 5 gramy.
+    columns - nazwy predyktorów w modelu,
+    gdy brak predyktora w pliku, tworzy pustą komórkę z wartością zero
+    """
+
+    file = normalization(file)
+    file = normalize(file)
+    file = remove_intr_refe(file)
+    file = remove_footer(file, pages)
+    file = file.replace("startstrona", "").replace("  ", " ").replace("  ", " ")
+    file = make_lemmatization_for_one_file(file)
+    df = vectorizer_for_one_file(file, 1, 5)
+
+    diff_to_del = list(set(df.columns)-set(columns))
+    diff_to_add = list(set(columns)-set(df.columns))
+
+    list_of_columns1 = set(df)-set(diff_to_del)
+    list_of_columns2 = list_of_columns1.union(diff_to_add)
+
+    df_ = pd.DataFrame([[0]*len(diff_to_add)], columns=diff_to_add)
+    to_pred = pd.DataFrame(pd.concat([df_,df[list_of_columns1]], axis=0).fillna(0).sum()).transpose()
+
+    return(to_pred)
 
 ###################
 # Wczytanie danych
@@ -312,8 +358,10 @@ def convert_dash_content_to_txt(contents):
         maxpages = 0
         caching = True
         pagenos=set()
-
-        for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,caching=caching, check_extractable=True):
+        pages = PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,caching=caching, check_extractable=True)
+        number_of_pages = 0
+        for page in pages:
+            number_of_pages += 1
             interpreter.process_page(page)
 
         text = retstr.getvalue()
@@ -321,7 +369,7 @@ def convert_dash_content_to_txt(contents):
         fp.close()
         device.close()
         retstr.close()
-        return text
+        return text, number_of_pages
 
 
 
