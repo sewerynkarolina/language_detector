@@ -6,17 +6,20 @@ from io import BytesIO
 import prepare_data as prepare_data
 import base64
 import io
-import pandas as pd
+
+from sklearn.externals import joblib
+from sklearn.linear_model import LogisticRegression
+import pandas as p
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css',
         'https://github.com/plotly/dash-salesforce-crm/blob/master/static/s8.css',
         'https://github.com/plotly/dash-salesforce-crm/blob/master/static/s4.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
+lasso = joblib.load("logistic_simple_model.h5")
 
 app.layout = html.Div([
-    html.H1('Language detector'),
+        html.H1('Language detector'),
 
     html.Div('''
         by: K. Banecki, K. Lorenc, J. Piega, M.Seliga, K.Seweryn
@@ -64,6 +67,7 @@ def make_prediction(contents):
     column_names = pd.read_csv("model_base_columns.csv")
     pages = contents[1]
     return prepare_data.prepare_to_model(contents[0], column_names, pages)
+
 
 
 if __name__ == '__main__':
