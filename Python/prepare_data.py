@@ -264,7 +264,7 @@ def delete_nan(df, column_name='text'):
     df = df[pd.notnull(df['text'])]
     return(df.reset_index().drop('index', axis=1))
 
-def vectorizer_n_files(df, list_of_files_indexes, column_name='0', min_gram, max_gram):
+def vectorizer_n_files(df, list_of_files_indexes, min_gram, max_gram, column_name='0'):
     """
     Funkcja która przekształca kolumnę dataframu z tekstem na macierz zliczeń
     zwracamy macierz i listę krajów
