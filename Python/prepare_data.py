@@ -275,6 +275,16 @@ def vectorizer_n_files(df, list_of_files_indexes, column_name='0', min_gram, max
     
     return(new_df,df.iloc[list_of_files_indexes]['countries'].values ) 
 
+def vectorizer_for_one_file(text, min_gram, max_gram):
+    """
+    Funkcja która przekształca teskst a macierz zliczeń
+    zwracamy macierz i listę krajów
+    """
+    vec = CountVectorizer(ngram_range=(min_gram,max_gram))
+    X = vec.fit_transform(text)
+    new_df = pd.DataFrame(X.toarray(), columns=vec.get_feature_names())
+    
+    return(new_df,df.iloc[list_of_files_indexes]['countries'].values ) 
 
 
 
