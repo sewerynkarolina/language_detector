@@ -6,6 +6,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 #import pdftotext
 #import pdftotext
+from joblib import dump, load
 
 from nltk.stem import WordNetLemmatizer
 import nltk
@@ -334,12 +335,12 @@ def prepare_to_model(file, columns, pages):
     gdy brak predyktora w pliku, tworzy pustą komórkę z wartością zero
     """
  
-    file = prep_data.normalization(file)
-    file = prep_data.normalize(file) 
-    file = prep_data.remove_intr_refe(file)
-    file = prep_data.remove_footer(file, pages)
+    file = normalization(file)
+    file = normalize(file) 
+    file = remove_intr_refe(file)
+    file = remove_footer(file, pages)
     file = file.replace("startstrona", "").replace("  ", " ").replace("  ", " ")
-    file = prep_data.make_lemmatization_for_one_file(file)
+    file = make_lemmatization_for_one_file(file)
     df = vectorizer_for_one_file(file, 1, 5)
     
     diff_to_del = list(set(df.columns)-set(columns))
