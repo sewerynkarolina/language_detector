@@ -25,8 +25,10 @@ app = dash.Dash(__name__)#, #external_stylesheets=external_stylesheets)
 lasso = joblib.load("../logistic_simple_model.h5")
 cv = joblib.load("vectorizer_1gram.h5")
 
+countries = ['USA', 'China', 'France', 'Germany', 'Italy', 'Poland', 'Russia',
+   'Spain', 'Japan', 'UK', 'Turkey', 'Vietnam']
 pp = make_pipeline(cv, lasso)
-explainer = LimeTextExplainer()
+explainer = LimeTextExplainer(class_names=countries)
 
 
 with open("../columns.json", "r") as f:
@@ -34,7 +36,7 @@ with open("../columns.json", "r") as f:
 
 def layout_app(app):
     app.layout = html.Div([
-       
+
 
                     html.H1('Language detector'),
 
@@ -90,7 +92,7 @@ def make_prediction(contents):
         return None
     pages = contents[1]
     X = prepare_data.prepare_to_model(contents[0], column_names, pages)
-    exp = explainer.explain_instance(X, pp.predict_proba, num_features=6)
+    exp = explainer.explain_instance(X, pp.predict_proba, num_features=6, top_labels=1)
     exp.save_to_file("explain.html")
     url = "explain.html"
     webbrowser.open(url,new=1)
