@@ -14,24 +14,25 @@ import pandas as pd
 from lime.lime_text import LimeTextExplainer
 from sklearn.pipeline import make_pipeline
 import dash_dangerously_set_inner_html
+import joblib
 
 external_css = ["https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css",
             "//fonts.googleapis.com/css?family=Raleway:400,300,600",
             "//fonts.googleapis.com/css?family=Dosis:Medium",
             "https://cdn.rawgit.com/plotly/dash-app-stylesheets/0e463810ed36927caf20372b6411690692f94819/dash-drug-discovery-demo-stylesheet.css"]
 
-app = dash.Dash(__name__)#, #external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__)
 
-lasso = joblib.load("../logistic_simple_model.h5")
-cv = joblib.load("vectorizer_1gram.h5")
+lasso = joblib.load("model123.joblib")
+cv = joblib.load("vectorizer_123gram.h5")
 
 countries = ['USA', 'China', 'France', 'Germany', 'Italy', 'Poland', 'Russia',
    'Spain', 'Japan', 'UK', 'Turkey', 'Vietnam']
 pp = make_pipeline(cv, lasso)
-explainer = LimeTextExplainer(class_names=countries)
+explainer = LimeTextExplainer(class_names=countries)#, bow=False)
 
 
-with open("../columns.json", "r") as f:
+with open("model123columns.json", "r") as f:
     column_names = json.load(f)
 
 def layout_app(app):
@@ -92,7 +93,8 @@ def make_prediction(contents):
         return None
     pages = contents[1]
     X = prepare_data.prepare_to_model(contents[0], column_names, pages)
-    exp = explainer.explain_instance(X, pp.predict_proba, num_features=6, top_labels=1)
+    print(pp.predict_proba)
+    exp = explainer.explain_instance(X, pp.predict_proba, num_features=10, top_labels=1)
     exp.save_to_file("explain.html")
     url = "explain.html"
     webbrowser.open(url,new=1)
@@ -100,4 +102,4 @@ def make_prediction(contents):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
