@@ -26,8 +26,8 @@ app = dash.Dash(__name__)
 lasso = joblib.load("model123.joblib")
 cv = joblib.load("vectorizer_123gram.h5")
 
-countries = ['USA', 'China', 'France', 'Germany', 'Italy', 'Poland', 'Russia',
-   'Spain', 'Japan', 'UK', 'Turkey', 'Vietnam']
+countries = [ 'China', 'France', 'Germany', 'Italy', 'Japan', 'Poland', 'Russia',
+   'Spain', 'Turkey', 'UK',  'Vietnam', 'USA']
 pp = make_pipeline(cv, lasso)
 explainer = LimeTextExplainer(class_names=countries)#, bow=False)
 
@@ -93,7 +93,7 @@ def make_prediction(contents):
         return None
     pages = contents[1]
     X = prepare_data.prepare_to_model(contents[0], column_names, pages)
-    print(pp.predict_proba)
+    #print(pp.predict_proba)
     exp = explainer.explain_instance(X, pp.predict_proba, num_features=10, top_labels=1)
     exp.save_to_file("explain.html")
     url = "explain.html"
