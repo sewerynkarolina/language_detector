@@ -16,12 +16,3 @@ randomowy_model_predykcja.ipynb <- Sieć neuronowa zbudowana na kilku kolumnach,
 
 ### IV) GUI
 
-## to do 
-- [ ] funkcja do tworzenia n-gramów *Asia*
-- [ ] lematyzacja *Kaja*
-- [x] part of speech tagger (określa częsci mowy) *Kasia*
-- [ ] czyszczenie macierzy słów *Marcin, Krzysiek*
-- [ ] redukcja wymiarów *Kasia, Kaja, Krzysiek, Asia, Marcin*
-- [ ] gui *Marcin*
-- [ ] sprawdzić wpływ zbalansowania *PÓŹNIEJ*
-- [ ] modele
